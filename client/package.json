@@ -6,7 +6,7 @@
     "ng": "ng",
     "build_server": "tsc server/stock-server.ts -m commonjs --outDir dist",
     "start_server": "node ./dist/server/stock-server.js",
-    "start": "ng serve --port 5200",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
