@@ -4,7 +4,7 @@
   "description": "",
   "main": "stocker-server.ts",
   "scripts": {
-    "start": "node .\\stocker-server.js",
+    "start": "node .\\dist\\stocker-server.js",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

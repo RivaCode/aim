@@ -6,7 +6,7 @@ import {Server} from "ws";
 const app = express();
 app.use(cors());
 
-const stocks = require("./data/nyse-listed.json").map(stock => {
+const stocks = require("../data/nyse-listed.json").map(stock => {
   return {
     company_name: stock["Company Name"],
     symbol: stock["ACT Symbol"]
