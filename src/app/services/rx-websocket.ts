@@ -1,20 +1,19 @@
 import {Subject, Observable, Subscriber, Subscription, Observer} from "rxjs/Rx";
 
+import {connect} from "socket.io-client";
+
 export class RxWebSocket {
   private _out: Observable<any>;
   private _in: Observer<any>;
-  private _socket: WebSocket;
-  private _messageQueue: string[] = [];
+  private _socket: SocketIOClient.Socket;
+  private _messageQueue: {}[] = [];
 
-  didOpen: (e: Event) => void;
+  didOpen: () => void;
   willOpen: () => void;
-  didClose: (e?: any) => void;
+  didClose: () => void;
 
-  static create(
-    url: string,
-    WebSocketCtor: {new (url: string): WebSocket} = WebSocket
-  ): RxWebSocket {
-    return new RxWebSocket(url, WebSocketCtor);
+  static create(url: string): RxWebSocket {
+    return new RxWebSocket(url);
   }
 
   get out(): Observable<any> {
@@ -24,34 +23,31 @@ export class RxWebSocket {
           this.willOpen();
         }
 
-        const socket = (this._socket = new this.WebSocketCtor(this.url));
-
-        socket.onopen = e => {
+        const socketIO = (this._socket = connect(this._url));
+        socketIO.on("connect", () => {
           this.flushMessages();
           if (this.didOpen) {
-            this.didOpen(e);
+            this.didOpen();
           }
-        };
+        });
 
-        socket.onclose = e => {
-          if (e.wasClean) {
+        socketIO.on("disconnect", reason => {
+          if (reason !== "io server disconnect") {
             subscriber.complete();
             if (this.didClose) {
-              this.didClose(e);
+              this.didClose();
             }
           } else {
-            subscriber.error(e);
+            subscriber.error({error: reason});
           }
-        };
+        });
 
-        socket.onerror = e => subscriber.error(e);
+        socketIO.on("error", e => subscriber.error(e));
 
-        socket.onmessage = e => {
-          subscriber.next(this.selector(e));
-        };
+        socketIO.on("message", msg => subscriber.next(msg));
 
         return () => {
-          socket.close();
+          socketIO.close();
           this._socket = null;
           this._out = null;
         };
@@ -61,21 +57,19 @@ export class RxWebSocket {
     return this._out;
   }
 
-  get in(): Observer<any> {
+  get in(): Observer<{}> {
     if (!this._in) {
       this._in = {
-        closed: this._socket && this._socket.readyState === WebSocket.CLOSED,
-        next: (message: any) => {
-          const data =
-            typeof message === "string" ? message : JSON.stringify(message);
-          if (this._socket && this._socket.readyState === WebSocket.OPEN) {
+        closed: !this._socket || this._socket.disconnected,
+        next: (message: {}) => {
+          if (this._socket && this._socket.connected) {
             this._socket.send(message);
           } else {
             this._messageQueue.push(message);
           }
         },
         error: (err: any) => {
-          this._socket.close(3000, err);
+          this._socket.close();
           this._socket = null;
         },
         complete: () => {
@@ -87,19 +81,12 @@ export class RxWebSocket {
     return this._in;
   }
 
-  private constructor(
-    private url: string,
-    private WebSocketCtor: {new (url: string): WebSocket} = WebSocket
-  ) {}
-
-  private selector(e: MessageEvent) {
-    return JSON.parse(e.data);
-  }
+  private constructor(private _url: string) {}
 
   private flushMessages() {
     const {_messageQueue, _socket} = this;
 
-    while (_messageQueue.length > 0 && _socket.readyState === WebSocket.OPEN) {
+    while (_messageQueue.length > 0 && _socket.connected) {
       _socket.send(_messageQueue.shift());
     }
   }

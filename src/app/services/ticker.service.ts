@@ -17,7 +17,7 @@ export class TickerService {
   connectionState$ = this.connectionState.asObservable();
 
   constructor(@Inject(SOCKET_URL) private _url: string) {
-    this._socket = RxWebSocket.create(this._url, WebSocket);
+    this._socket = RxWebSocket.create(this._url);
     this.setupSocketStates();
   }
 
