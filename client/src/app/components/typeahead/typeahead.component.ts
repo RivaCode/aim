@@ -31,6 +31,7 @@ export class TypeaheadComponent implements AfterContentInit {
     this.tickers = Observable.fromEvent(this.symbolTxt.nativeElement, "input")
       .map(_ => <string>this.symbolTxt.nativeElement.value)
       .debounceTime(200)
+      .merge(this._clear.mapTo(""))
       .distinctUntilChanged()
       .switchMap((val: string) => this._tickerLoader.load(val))
       .merge(this._clear.mapTo([]));

@@ -7,10 +7,7 @@
         <li>
           <p class="navbar-text">
             <strong class="font-weight-bold"
-                    [ngClass]="{
-                      'text-warning': status === 'RETRYING' || status === 'WAITING FOR CONNECTION',
-                      'text-success': status === 'CONNECTED',
-                      'text-danger': status === 'CLOSED'}">{{status}}</strong>
+                    [ngClass]="{'text-warning': status === 'RETRYING' || status === 'WAITING FOR CONNECTION', 'text-success': status === 'CONNECTED', 'text-danger': status === 'CLOSED'}">{{status}}</strong>
           </p>
         </li>
       </ul>

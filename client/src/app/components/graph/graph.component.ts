@@ -4,7 +4,6 @@ import {Subscription} from "rxjs/Rx";
 import * as d3 from "d3";
 
 import {Ticker, TickerMessage} from "./../../services/ticker.service";
-import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: "stock-graph",
@@ -15,7 +14,7 @@ export class StockGraphComponent implements OnInit, OnDestroy {
   private _subscription: Subscription = Subscription.EMPTY;
 
   @Input("ticker") ticker: Ticker;
-  values: IPrice[];
+  values: any[];
   path: any;
   line: any;
   svg: any;
@@ -105,7 +104,6 @@ export class StockGraphComponent implements OnInit, OnDestroy {
       .style("stroke", "#00BCD4")
       .attr("d", this.line);
 
-    this.ticker.recentTicks = Observable.empty();
     this._subscription = this.ticker.ticks.subscribe(tick => this.render(tick));
   }
 
@@ -117,7 +115,7 @@ export class StockGraphComponent implements OnInit, OnDestroy {
   }
 
   private render(latestValue: TickerMessage) {
-    this.values.push(this.asPrice(latestValue));
+    this.values.push({price: latestValue.price});
 
     this.path
       .attr("d", this.line)
@@ -127,10 +125,4 @@ export class StockGraphComponent implements OnInit, OnDestroy {
       .attr("transform", "translate(" + this.x(-1) + ",0)")
       .each("end", () => this.values.shift());
   }
-
-  private asPrice = ({price}: TickerMessage) => ({price});
-}
-
-interface IPrice {
-  price: number;
 }

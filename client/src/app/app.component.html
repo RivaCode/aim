@@ -6,6 +6,9 @@
   <div class="container">
     <div class="row"
          *ngFor="let ticker of tickers">
+      <h4>Symbol:
+        <b>{{ticker.symbol}}</b>
+      </h4>
       <button (click)="removeTicker(ticker.symbol)"
               class="col-md-2 btn btn-default">Close</button>
       <stock-graph [ticker]="ticker"

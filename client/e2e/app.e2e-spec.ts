@@ -1,10 +1,10 @@
-import { StacksharePage } from './app.po';
+import { StocksharePage } from './app.po';
 
-describe('stackshare App', () => {
-  let page: StacksharePage;
+describe('stockshare App', () => {
+  let page: StocksharePage;
 
   beforeEach(() => {
-    page = new StacksharePage();
+    page = new StocksharePage();
   });
 
   it('should display welcome message', () => {
