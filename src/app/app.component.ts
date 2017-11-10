@@ -1,7 +1,11 @@
 import {Observable} from "rxjs/Rx";
 import {Component} from "@angular/core";
 
-import {ConnectionStates, TickerService, Ticker} from "./services/ticker.service";
+import {
+  ConnectionStates,
+  TickerService,
+  Ticker
+} from "./services/ticker.service";
 
 @Component({
   selector: "app-root",

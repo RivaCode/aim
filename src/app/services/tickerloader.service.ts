@@ -1,16 +1,15 @@
 import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Rx";
 
 @Injectable()
 export class TickerloaderService {
-  constructor(private _http: Http) {}
+  constructor(private _http: HttpClient) {}
 
   load(val: string): Observable<IStock[]> {
     return this._http
-      .get(`http://localhost:3000/stocks?symbol=${val}`)
-      .retry(2)
-      .map((res: Response) => <IStock[]>res.json());
+      .get<IStock[]>(`http://localhost:3000/stocks?symbol=${val}`)
+      .retry(2);
   }
 }
 

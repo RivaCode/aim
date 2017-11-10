@@ -10,7 +10,10 @@ export class RxWebSocket {
   willOpen: () => void;
   didClose: (e?: any) => void;
 
-  static create(url: string, WebSocketCtor: {new (url: string): WebSocket} = WebSocket): RxWebSocket {
+  static create(
+    url: string,
+    WebSocketCtor: {new (url: string): WebSocket} = WebSocket
+  ): RxWebSocket {
     return new RxWebSocket(url, WebSocketCtor);
   }
 
@@ -63,7 +66,8 @@ export class RxWebSocket {
       this._in = {
         closed: this._socket && this._socket.readyState === WebSocket.CLOSED,
         next: (message: any) => {
-          const data = typeof message === "string" ? message : JSON.stringify(message);
+          const data =
+            typeof message === "string" ? message : JSON.stringify(message);
           if (this._socket && this._socket.readyState === WebSocket.OPEN) {
             this._socket.send(message);
           } else {
@@ -83,7 +87,10 @@ export class RxWebSocket {
     return this._in;
   }
 
-  private constructor(private url: string, private WebSocketCtor: {new (url: string): WebSocket} = WebSocket) {}
+  private constructor(
+    private url: string,
+    private WebSocketCtor: {new (url: string): WebSocket} = WebSocket
+  ) {}
 
   private selector(e: MessageEvent) {
     return JSON.parse(e.data);

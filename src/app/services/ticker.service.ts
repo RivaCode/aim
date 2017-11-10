@@ -8,7 +8,9 @@ import {SOCKET_URL} from "../config";
 export class TickerService {
   private url: string;
   private _socket: RxWebSocket;
-  private connectionState = new BehaviorSubject<ConnectionStates>(ConnectionStates.CONNECTING);
+  private connectionState = new BehaviorSubject<ConnectionStates>(
+    ConnectionStates.CONNECTING
+  );
 
   // connection state is a behavior subject, so anyone that
   // subscribes to it can see the most recent value it's emitted.
@@ -31,7 +33,9 @@ export class TickerService {
         // first subscribe to the socket, filtering out only the
         // messages we care about
         const msgSub = socket.out
-          .filter<TickerMessage>(d => d.symbol === symbol && d.price !== undefined)
+          .filter<TickerMessage>(
+            d => d.symbol === symbol && d.price !== undefined
+          )
           .subscribe(subscriber);
 
         // now send a message over the socket to tell the server
@@ -54,8 +58,8 @@ export class TickerService {
         // if this fails, let's retry. The retryWhen operator
         // gives us a stream of errors that we can transform
         // into an observable that notifies when we should retry the source
-        .retryWhen(errors =>
-          errors.switchMap(err => {
+        .retryWhen(errors$ =>
+          errors$.switchMap(_ => {
             // update the connection state to let it know we're retrying
             this.connectionState.next(ConnectionStates.RETRYING);
 
