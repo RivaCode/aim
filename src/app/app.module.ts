@@ -1,6 +1,6 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
-import {HttpModule} from "@angular/http";
+import {HttpClientModule} from "@angular/common/http";
 
 import {SOCKET_URL} from "./config";
 import {AppComponent} from "./app.component";
@@ -12,12 +12,17 @@ import {TypeaheadComponent} from "./components/typeahead/typeahead.component";
 import {NavbarComponent} from "./components/navbar/navbar.component";
 import {StockGraphComponent} from "./components/graph/graph.component";
 
-const COMPONENTS = [AppComponent, TypeaheadComponent, NavbarComponent, StockGraphComponent];
+const COMPONENTS = [
+  AppComponent,
+  TypeaheadComponent,
+  NavbarComponent,
+  StockGraphComponent
+];
 
 @NgModule({
   declarations: COMPONENTS,
   exports: COMPONENTS,
-  imports: [BrowserModule, HttpModule],
+  imports: [BrowserModule, HttpClientModule],
   providers: [
     TickerloaderService,
     TickerService,
