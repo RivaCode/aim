@@ -1,0 +1,21 @@
+<div class="input-group">
+  <span class="input-group-addon"
+        id="symbol-input">NYSE</span>
+  <input type="text"
+         placeholder="Search for Symbol..."
+         #symbolTxt
+         aria-describedby="symbol-input">
+</div>
+<table class="table table-striped maxlength">
+  <tbody>
+    <tr *ngFor="let tick of tickers | async">
+      <td>{{tick.symbol}}</td>
+      <td>{{tick.company_name}}</td>
+      <td>
+        <button type="button"
+                class="btn btn-primary"
+                (click)="onSelect(tick)">Select</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
